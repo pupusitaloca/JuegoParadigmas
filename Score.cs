@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using KpopJumpPRY.Engine.Scripts;
+﻿using KpopJumpPRY.Engine.Scripts;
 
 namespace KpopJumpPRY.Engine
 {
-    public class Score:GameObject
+    public class Score : GameObject
     {
         Transform trans;
         Image sprite;
@@ -16,7 +11,7 @@ namespace KpopJumpPRY.Engine
         int score = 0;
         public int CurrentScore => score;
 
-        public Score(int x,int y) : base(x,y)
+        public Score(int x, int y) : base(x, y)
         {
             sprite = Engine.LoadImage("assets/score.png");
             arialFont = Engine.LoadFont("Fonts/arial.ttf", 30);

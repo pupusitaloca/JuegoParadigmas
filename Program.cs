@@ -26,7 +26,7 @@ namespace KpopJumpPRY.Engine.Scripts
 
                 GameManager.Instance.Update();
                 GameManager.Instance.Render();
-            }
+            }   
 
         }
 

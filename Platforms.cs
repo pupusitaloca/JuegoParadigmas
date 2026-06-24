@@ -14,6 +14,10 @@ namespace KpopJumpPRY.Engine
         protected Transform transform;
         public Transform Transform => transform;
 
+        private bool isActive = true;
+        public bool IsActive => isActive;
+        public void SetActive(bool active) { isActive = active; }
+
         public Platforms(int startPosX, int startPosY)
           
         {

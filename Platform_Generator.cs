@@ -16,6 +16,10 @@ namespace ProyectoSDL2.Engine
 
         Random random = new Random();
 
+        private ObjectPool<NormalPlat> normalPool = new ObjectPool<NormalPlat>(20);
+        private ObjectPool<MovPlatform> movPool = new ObjectPool<MovPlatform>(10);
+        private ObjectPool<FragilePlatforms> fragilePool = new ObjectPool<FragilePlatforms>(5);
+
         int currentY = 800;
 
         int screenWidth = 640;
@@ -48,15 +52,18 @@ namespace ProyectoSDL2.Engine
 
                 if (chance < 70)
                 {
-                    platforms.Add(new NormalPlat(x, currentY));
+                    var plat = normalPool.Get(x, currentY);
+                    platforms.Add(plat);
                 }
                 else if (chance < 90)
                 {
-                    platforms.Add(new MovPlatform(x, currentY));
+                    var plat = movPool.Get(x, currentY);
+                    platforms.Add(plat);
                 }
                 else
                 {
-                    platforms.Add(new FragilePlatforms(x, currentY));
+                    var plat = fragilePool.Get(x, currentY);
+                    platforms.Add(plat);
                 }
 
 
@@ -82,6 +89,25 @@ namespace ProyectoSDL2.Engine
             for (int i = 0; i < platforms.Count; i++)
             {
                 platforms[i].Update();
+            }
+        }
+
+        public void RemoveOffscreen(int screenHeight)
+        {
+            for (int i = platforms.Count - 1; i >= 0; i--)
+            {
+                if (platforms[i].Transform.PosY > screenHeight + 50)
+                {
+                    
+                    if (platforms[i] is NormalPlat n)
+                        normalPool.Return(n);
+                    else if (platforms[i] is MovPlatform m)
+                        movPool.Return(m);
+                    else if (platforms[i] is FragilePlatforms f)
+                        fragilePool.Return(f);
+
+                    platforms.RemoveAt(i);
+                }
             }
         }
     } 

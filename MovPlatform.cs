@@ -11,7 +11,7 @@ namespace KpopJumpPRY.Engine
         private int speed = 3;
 
         private bool goingRight = true;
-
+        public MovPlatform() : base(0, 0) { }
         public MovPlatform(int x, int y) : base(x, y)
         {
             sprite = Engine.LoadImage("assets/Platforms/platform.png");
@@ -19,11 +19,13 @@ namespace KpopJumpPRY.Engine
 
         public override void Render()
         {
-            Engine.Draw(sprite, (int)transform.PosX, (int)transform.PosY);
+            Engine.LoadImage(sprite, (int)transform.PosX, (int)transform.PosY);
+            if (!IsActive) return;
         }
 
         public override void Update()
         {
+            if (!IsActive) return;
             MoveRight();
             if (goingRight)
             {

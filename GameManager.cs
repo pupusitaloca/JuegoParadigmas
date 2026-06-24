@@ -31,6 +31,8 @@ namespace KpopJumpPRY.Engine
         private WinMenu winMenu = new WinMenu();
         private DeathMenu deathMenu = new DeathMenu();
 
+        
+
         public MainGame MainGame
         {
             get { return mainGame; }
@@ -55,6 +57,7 @@ namespace KpopJumpPRY.Engine
 
         public void Start()
         {
+           
             MainGame.Start();
         }
 

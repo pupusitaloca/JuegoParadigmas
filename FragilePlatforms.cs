@@ -17,6 +17,8 @@ namespace KpopJumpPRY.Engine
         private float fallSpeed = 0;
         private Animator breakAnim;
         private Animator CurrentState;
+
+        public FragilePlatforms() : base(0, 0) { }
         public FragilePlatforms(int x, int y) : base(x, y)
         {
             sprite = new Image("assets/Platforms/Broken.png");
@@ -26,6 +28,7 @@ namespace KpopJumpPRY.Engine
 
         public override void Render()
         {
+            if (!IsActive) return;
             if (breaking)
             {
                 Engine.Draw(
@@ -46,6 +49,7 @@ namespace KpopJumpPRY.Engine
 
         public override void Update()
         {
+            if (!IsActive) return;
             if (breaking)
             {
                 CurrentState.Update();
@@ -67,6 +71,7 @@ namespace KpopJumpPRY.Engine
 
         public void BreakPlat() 
         {
+
             breaking = true;
 
         }
