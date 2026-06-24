@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KpopJumpPRY.Engine.Scripts;
+using ProyectoSDL2.Engine;
 
 namespace KpopJumpPRY.Engine
 {
@@ -13,11 +14,18 @@ namespace KpopJumpPRY.Engine
 
         Score score;
 
+        Platform_Generator platform;
+
+        public Platform_Generator Platform => platform;
         public Player Player => player;
 
-        private int limit = 300;
+        int nextPlatformY;
 
-        private int h = 1024;
+        private int limit = 300;
+        private int screenHeight = 800;
+        private int minPlatformCount = 20;
+
+        
 
         public bool Die;
 
@@ -25,53 +33,28 @@ namespace KpopJumpPRY.Engine
 
         public List<GameObject> GameObjects => gameObjects;
 
-        List<Platforms> platforms = new List<Platforms>();
-
-        public List<Platforms> Platforms => platforms;
-
-        
-
         public void Start()
         {
-            player = new Player(500, 500);
-            platforms.Add(new NormalPlat(500, 600));
+            player = new Player(500, 450);
+
+            platform = new Platform_Generator(0);  
+            platform.GenerateStartPlatform();
+            platform.GeneratePlatforms(30);
 
             score = new Score(64, 20);
 
-            Random random = new Random();
 
-            for (int i = 0; i < 10; i++)
-            {
-                int x = random.Next(150, 420);
-
-                int y = i * 100;
-
-                if (random.Next(0, 2) == 0)
-                {
-                    platforms.Add(new NormalPlat(x, y));
-                }
-                else
-                {
-                    platforms.Add(new MovPlatform(x, y));
-                }
-            }
         }
 
         public void Update()
         {
             player.Update();
             score.Update();
+            platform.Update();
             for (int i = 0; i < gameObjects.Count; i++)
             {
                 gameObjects[i].Update();
             }
-
-            for (int i = 0; i < platforms.Count; i++)
-            {
-                platforms[i].Update();
-            }
-
-
 
             if (player.Transform.PosY < limit)
             {
@@ -82,10 +65,19 @@ namespace KpopJumpPRY.Engine
                 MoveCamera(offset);
             }
 
+            for (int i = platform.Platforms.Count - 1; i >= 0; i--)
+            {
+                if (platform.Platforms[i].Transform.PosY > screenHeight + 50)
+                {
+                    platform.Platforms.RemoveAt(i);
+                }
+            }
 
-            GeneratePlatforms();
-            
-            
+            if (platform.Platforms.Count < minPlatformCount)
+            {
+                platform.GeneratePlatforms(10);
+            }
+
 
         }
 
@@ -94,60 +86,39 @@ namespace KpopJumpPRY.Engine
             Engine.Clear();
             score.Render();
             player.Render();
+            platform.Render();
             for (int i = 0; i < gameObjects.Count; i++)
             {
                 gameObjects[i].Render();
             }
 
-            for (int i = 0; i < platforms.Count; i++)
-            {
-                platforms[i].Render();
-            }
+           
             Engine.Show();
         }
 
         private void MoveCamera(float offset)
         {
-            for (int i = 0; i < platforms.Count; i++)
+
+            
+
+            for (int i = 0; i < platform.Platforms.Count; i++)
             {
-                platforms[i].Transform.Translate(0,offset);
+                platform.Platforms[i].Transform.Translate(0,offset);
             }
 
             
+
         }
         public bool OnDie ()
         {
-            return player.Transform.PosY > 1024;
-
-            Die = true;
-
-
-        }
-        private void GeneratePlatforms()
-        {
-            Random random = new Random();
-
-            for (int i = 0; i < platforms.Count; i++)
+            if (player.Transform.PosY > screenHeight)
             {
-                if (platforms[i].Transform.PosY > 1024)
-                {
-                    platforms.RemoveAt(i);
-
-                    int x = random.Next(150, 420);
-
-                    int y = -50;
-
-                    if (random.Next(0, 2) == 0)
-                    {
-                        platforms.Add(new NormalPlat(x, y));
-                    }
-                    else
-                    {
-                        platforms.Add(new MovPlatform(x, y));
-                    }
-                }
+                Die = true;
+                return true;
             }
+            return false;
         }
+        
 
     }
 }
